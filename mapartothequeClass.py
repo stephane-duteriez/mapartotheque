@@ -1,4 +1,4 @@
-from google.appengine.ext import ndb
+from google.cloud import ndb
 
 class Rythm(ndb.Model):
     id_rythme = ndb.IntegerProperty()
@@ -31,3 +31,10 @@ class Tune_in_session(ndb.Model):
     id_session = ndb.IntegerProperty()
     pos = ndb.IntegerProperty()
     lastChanged = ndb.DateTimeProperty(auto_now = True)
+
+class RythmForDisplay():
+    def __init__(self, rythme):
+        self.rythme = rythme
+        self.listTunes = []
+    def add_tune(self, tune):
+        self.listTunes.append(tune)

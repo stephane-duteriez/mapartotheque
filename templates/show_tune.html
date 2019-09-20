@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block navbar %}
+<ul class="nav navbar-nav  navbar-right">
+	{{ list_siblings|safe }}
+	<li><a class="" href="/home/download/{{tune.pdf_file}}?file_name={{tune.titre}}" download="{{tune.titre}}.pdf"><span class="glyphicon glyphicon-save"></span>PDF</a></li>
+</ul>
+{% endblock %}
+{% block content %}
+<div class="container body-content">
+	<div class="plain" id="view">
+		<h3 class="tune">{{tune.titre}}</h3>
+		<img id="myImg" src="https://tunemanager.blob.core.windows.net/mycontainer/{{tune.image_file}}" width="600"></img>
+	</div>
+	<script type="text/javascript">
+		function to_execute() {
+			var width=$("#view").width();
+			$("#myImg").width(width);
+			$(window).resize(function() {
+				var width=$("#view").width();
+				$("#myImg").width(width);
+			});
+		};
+	</script>
+</div>
+{% endblock %}

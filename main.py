@@ -15,16 +15,71 @@
 # [START gae_python37_app]
 from flask import Flask, render_template
 from mapartothequeClass import *
+import init
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
 
+IS_DEV = __name__ == '__main__'
+
+client = ndb.Client()
 
 @app.route('/')
 def main():
-    return render_template('listeTunes.html', liste_tunes = [], list_rythmes = [])
+    with client.context() as context:
+        b_rythmes = Rythm.query()
+        d_rythmes = {}
+        for rythme in b_rythmes:
+            d_rythmes[rythme.id_rythme] = RythmForDisplay(rythme)
+        b_tunes =  Tune.query().order(Tune.titre)
+        for tune in b_tunes:
+            d_rythmes[tune.id_rythme].add_tune(tune)
+        return render_template('listeTunes.html', list_tunes = d_rythmes)
 
+@app.route('/home/view/<int:idTune>')
+def ViewTune(idTune):
+    with client.context() as context:
+        b_tunes = Tune.query(Tune.id_tune==int(idTune))
+        if (b_tunes) :
+            tune = b_tunes.get()
+            return render_template('show_tune.html', tune=tune, list_siblings=[])
+
+@app.route('/initdatabase')
+def InitLocal():
+    with client.context() as context:
+        b_rythme = Rythm()
+        b_rythme.nom_rythme = "test"
+        b_rythme.id_rythme= 1
+        b_rythme.put()
+        b_tune = Tune()
+        b_tune.titre = "default"
+        b_tune.id_tune = 1
+        b_tune.id_rythme = 1
+        b_tune.image_file = "0qtibeotdwt.png"
+        b_tune.id_youtubelink = "http://youtu.be/0r3cEKZiLmg"
+        b_tune.put()
+        b_session = Session()
+        b_session.name_session = "test"
+        b_session.id_session = 1
+        b_session.id_rythme = 1
+        b_session.put()
+        b_tuneInSession = Tune_in_session()
+        b_tuneInSession.id_session = b_session.id_session
+        b_tuneInSession.id_tune = b_tune.id_tune
+        b_tuneInSession.pos = 0
+        b_tuneInSession.put()
+
+@app.route('/addmoretune')
+def AddMoreTune():
+    with client.context() as context:
+        b_tune = Tune()
+        b_tune.titre = "default"
+        b_tune.id_tune = 1
+        b_tune.id_rythme = 1
+        b_tune.image_file = "0qtibeotdwt.png"
+        b_tune.id_youtubelink = "http://youtu.be/0r3cEKZiLmg"
+        b_tune.put()
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App

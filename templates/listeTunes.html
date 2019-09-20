@@ -4,17 +4,40 @@
 <div class="container body-content">
 	<h2>Tunes</h2>
 	<div class="panel-group" id="accordion">
-	{% for rythme in list_rythmes %}
+	{% for element in list_tunes.values() %}
 		<div class="panel panel-default">
-			<div class="panel-heading btn_collapse" data-toggle="collapse" data-parent="#accordion" href="#r{{rythme.id_rythme}}">
+			<div class="panel-heading btn_collapse" data-toggle="collapse" data-parent="#accordion" href="#r{{element.rythme.id_rythme}}">
 				<h3 class="panel-title">
-					{{rythme.nom_rythme}}
+					{{element.rythme.nom_rythme}}
 				</h3>
 			</div>
-		<div id="r{{rythme.id_rythme}}" class="panel-collapse collapse">
-                <ul id="l{{rythme.id_rythme}}" class="list-group">
-                </ul>
-            </div>
+			<div id="r{{element.rythme.id_rythme}}" class="panel-collapse collapse">
+					<ul id="l{{element.rythme.id_rythme}}" class="list-group">
+						{% for tune in element.listTunes %}
+						<li class="row list-group-item">
+								<div class="col-sm-8" style="cursor: pointer;" onclick="window.location='/home/view/{{tune.id_tune}}';">
+										<p>{{tune.titre}}</p>
+								</div>
+								<div class="col-sm-2">
+										<p>{{tune.auteur}}</p>
+								</div>
+								<div class="col-sm-2 btn-group" role="group">
+									<a class="btn btn-primary" href="/home/view/{{tune.id_tune}}">
+										<span class="glyphicon glyphicon-eye-open"></span>
+									</a>
+									<a class="btn btn-primary" href="/home/download/{{tune.pdf_file}}\?file_name={{tune.file_name}}" download="{{tune.titre}}.pdf">
+										<span class="glyphicon glyphicon-save"></span>
+									</a>
+									{% if tune.youtubelink != "None" %}
+									<div class="btn btn-primary" data-toggle="modal" data-target="#modal-video" data-link="{{tune.youtubelink}}">
+										<span class="glyphicon glyphicon-triangle-right "></span>
+										</div>
+									{% endif %}
+									</div>
+						</li>
+						{% endfor %}
+					</ul>
+			</div>
 		</div>
 		
 	{% endfor %}
@@ -33,44 +56,10 @@
 
 	<script type="text/javascript">
 	function to_execute() {
-		var HTMLtuneLink = "<li class=\"row list-group-item\">"+
-                           "<div class=\"col-sm-8\" style=\"cursor: pointer;\" onclick=\"window.location='/home/view/%id_tune%';\">"+
-                                "<p>%titre%</p>"+
-                            "</div>"+
-                            "<div class=\"col-sm-2\">"+
-                                "<p>%auteur%</p>"+
-                            "</div>"+
-                            "<div class=\"col-sm-2 btn-group\" role=\"group\">"+
-                                "<a class=\"btn btn-primary\" href=\"/home/view/%id_tune%\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>"+
-                                "<a class=\"btn btn-primary\" href=\"/home/download/%pdf_file%\?file_name=%file_name%\" download=\"%titre%.pdf\"><span class=\"glyphicon glyphicon-save\"></span></a>"+
-								"<div class=\"btn btn-primary %hideyoutubelink%\" data-toggle=\"modal\" data-target=\"#modal-video\" data-link=\"%youtubelink%\"><span class=\"glyphicon glyphicon-triangle-right \"></span></div>" +
-                            "</div>" +
-							"</li>"
-		{% for tune in list_tunes %}
-			var tuneLink = HTMLtuneLink.replace("%id%","{{tune.id_tune}}");
-			tuneLink = tuneLink.replace("%id_tune%","{{tune.id_tune}}");
-			tuneLink = tuneLink.replace("%id_tune%","{{tune.id_tune}}");
-			tuneLink = tuneLink.replace("%titre%","{{tune.titre}}");
-			tuneLink = tuneLink.replace("%titre%","{{tune.titre}}");
-			tuneLink = tuneLink.replace("%pdf_file%","{{tune.pdf_file}}");
-			tuneLink = tuneLink.replace("%file_name%","{{tune.titre}}");
-			tuneLink = tuneLink.replace("%auteur%","{{tune.auteur}}");
-			var youtubelink = "{{tune.youtubelink}}";
-			if (youtubelink === "None") {
-				tuneLink = tuneLink.replace("%hideyoutubelink%", "hide");
-			} else {
-				tuneLink = tuneLink.replace("%hideyoutubelink%", "");
-			}
-			tuneLink = tuneLink.replace("%youtubelink%", "{{tune.youtubelink}}")
-			$("#l{{tune.id_rythme}}").append(tuneLink);
-		{% endfor %}
 		$('#modal-video').on('show.bs.modal', function (event) {
-			
   			var button = $(event.relatedTarget); // Button that triggered the modal
   			var youtubelink = button.data('link'); // Extract info from data-* attributes
-  			// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-  			var modal = $(this);
+				var modal = $(this);
   			modal.find('.modal-body iframe')[0].src = youtubelink;
 		});
 	};
