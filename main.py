@@ -58,6 +58,13 @@ def ViewTune(idTune):
             tune = b_tunes.get()
             return render_template('show_tune.html', tune=tune, list_siblings=[])
 
+@app.route('/home/viewSession/<int:idSession>')
+def ViewSession(idSession):
+    with client.context() as context:
+        sessions = Session.query(Session.id_session==int(idSession))
+        if (sessions) :
+            session = sessions.get()
+            return render_template('show_session.html', session=session)
 
 @app.route('/initdatabase')
 def InitLocal():
