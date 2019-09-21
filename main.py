@@ -25,17 +25,30 @@ IS_DEV = __name__ == '__main__'
 
 client = ndb.Client()
 
+
 @app.route('/')
 def main():
     with client.context() as context:
         b_rythmes = Rythm.query()
-        d_rythmes = {}
+        lTunesForTemplate = {}
         for rythme in b_rythmes:
-            d_rythmes[rythme.id_rythme] = RythmForDisplay(rythme)
+            lTunesForTemplate[rythme.id_rythme] = RythmForDisplay(rythme)
         b_tunes =  Tune.query().order(Tune.titre)
         for tune in b_tunes:
-            d_rythmes[tune.id_rythme].add_tune(tune)
-        return render_template('listeTunes.html', list_tunes = d_rythmes)
+            lTunesForTemplate[tune.id_rythme].add_tune(tune)
+        return render_template('listTunes.html', list_tunes = lTunesForTemplate)
+
+@app.route('/home/sessions')
+def listSessions():
+    with client.context() as context:
+        lRythmes = Rythm.query()
+        lSessionsForTemplate = {}
+        for rythme in lRythmes:
+            lSessionsForTemplate[rythme.id_rythme] = RythmForDisplay(rythme)
+        lSessions =  Session.query().order(Session.name_session)
+        for session in lSessions:
+            lSessionsForTemplate[session.id_rythme].add_tune(session)
+        return render_template('listSessions.html', listSessions = lSessionsForTemplate)
 
 @app.route('/home/view/<int:idTune>')
 def ViewTune(idTune):
@@ -44,6 +57,7 @@ def ViewTune(idTune):
         if (b_tunes) :
             tune = b_tunes.get()
             return render_template('show_tune.html', tune=tune, list_siblings=[])
+
 
 @app.route('/initdatabase')
 def InitLocal():
