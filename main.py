@@ -26,8 +26,10 @@ client = ndb.Client()
 
 import webapp
 import init
+import api
 app.register_blueprint(webapp.bp)
 app.register_blueprint(init.bp)
+app.register_blueprint(api.bp)
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App

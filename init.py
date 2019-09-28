@@ -28,6 +28,7 @@ def InitLocal():
         b_tuneInSession.id_tune = b_tune.id_tune
         b_tuneInSession.pos = 0
         b_tuneInSession.put()
+    return "OK"
 
 @bp.route('/addmoretune')
 def AddMoreTune():
@@ -39,3 +40,4 @@ def AddMoreTune():
         b_tune.image_file = "0qtibeotdwt.png"
         b_tune.id_youtubelink = "http://youtu.be/0r3cEKZiLmg"
         b_tune.put()
+    return "OK"
