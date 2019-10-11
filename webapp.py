@@ -43,5 +43,7 @@ def ViewSession(idSession):
         if (sessions) :
             session = sessions.get()
             return render_template('show_session.html', session=session)
+        else :
+            return "Session non trouvée : " + idSession
 
 

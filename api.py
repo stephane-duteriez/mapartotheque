@@ -19,9 +19,12 @@ def putTune(idTune):
     with client.context() as context:
         dictionary = request.json
         tune = Tune.query(Tune.id_tune==int(idTune)).get()
+        if not tune :
+            tune = Tune()
         dictionary.pop('Rythme', None)
         tune.populate(**dictionary)
         tune.put()
+        return ""
     
 @bp.route('/api/apiTunes/', methods=['POST'])
 def postTune():
@@ -33,13 +36,15 @@ def postTune():
         new_id = Tune().query().order(-Tune.id_tune).get().id_tune + 1
         tune.id_tune=new_id
         tune.put()
+        return ""
 
-@bp.route('/api/apiTunes/', methods=['DEL'])
+@bp.route('/api/apiTunes/<int:idTune>', methods=['DELETE'])
 def deleteTune(idTune):
     with client.context() as context:
         tune = Tune.query(Tune.id_tune==int(idTune)).get()
         if tune:
             tune.key.delete()
+        return ""
 
 
 @bp.route('/api/apiSessions/', methods=['GET'])
@@ -51,14 +56,17 @@ def getSession():
             result.append(session.to_dict())
         return jsonify(result)
 
-@bp.route('/api/apiSessions/', methods=['PUT'])
+@bp.route('/api/apiSessions/<int:idSession>', methods=['PUT'])
 def putSession(idSession):
     with client.context() as context:
         dictionary = request.json
         session = Session().query(Session.id_session==int(idSession)).get()
+        if not session :
+            session = Session()
         dictionary.pop( 'Rythme', None)
         session.populate(**dictionary)
         session.put()
+        return ""
 
 @bp.route('/api/apiSessions/', methods=['POST'])
 def postSession():
@@ -70,13 +78,15 @@ def postSession():
         new_id = Session().query().order(-Session.id_session).get().id_session + 1
         session.id_session = new_id
         session.put()
+        return ""
 
-@bp.route('/api/apiSessions/', methods=['DEL'])
+@bp.route('/api/apiSessions/<int:idSession>', methods=['DELETE'])
 def deleteSession(idSession):
     with client.context() as context:
         session = Session.query(Session.id_session==int(idSession)).get()
         if session:
             session.key.delete()
+        return ""
 
 @bp.route('/api/apiRythmes/', methods=['GET'])
 def getRythme():
@@ -86,6 +96,15 @@ def getRythme():
         for rythme in b_rythme:
             result.append(rythme.to_dict())
         return jsonify(result)
+
+@bp.route('/api/apiRythmes/', methods=['POST'])
+def postRythme():
+    with client.context() as context:
+        dictionary = request.json
+        rythme = Rythm()
+        rythme.populate(**dictionary)
+        rythme.put()
+        return ""
         
 @bp.route('/api/apiTunesInSessions/', methods=['GET'])
 def getTunesInSession():
@@ -94,18 +113,22 @@ def getTunesInSession():
         result = []
         for tunesInSession in b_tunesInSessions:
             result.append(tunesInSession.to_dict())
+        return jsonify(result)
 
 @bp.route('/api/apiTunesInSessions/', methods=['POST'])
-def postTunesInSession(idSession):
+def postTunesInSession():
     with client.context() as context:
         dictionary = request.json
         tis = Tune_in_session()
         tis.populate(**dictionary)
         tis.put()
+        return ""
 
-@bp.route('/api/apiTunesInSessions/', methods=['DEL'])
+@bp.route('/api/apiTunesInSessions/<int:idSession>', methods=['DELETE'])
 def deleteTuneInSession(idSession):
     with client.context() as context:
         l_tis = Tune_in_session.query(Tune_in_session.id_session==int(idSession))
-        for tis in l_tis:
-            tis.key.delete()
+        if l_tis:
+            for tis in l_tis:
+                tis.key.delete()
+        return ""

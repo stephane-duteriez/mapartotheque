@@ -13,10 +13,10 @@
 			</div>
 			<div id="r{{element.rythme.id_rythme}}" class="panel-collapse collapse">
                 <ul id="l{{element.rythme.id_rythme}}" class="list-group">
-					{% for sessions in element.listTunes %}
+					{% for session in element.listTunes %}
 					<li class="row list-group-item">
 							<div class="col-sm-8" style="cursor: pointer;" onclick="window.location='/home/viewSession/{{session.id_session}}';">
-									<p>{{sessions.name_session}}</p>
+									<p>{{session.name_session}}</p>
 							</div>
 							<div class="col-sm-2 btn-group" role="group">
 								<a class="btn btn-primary" href="/home/viewSession/{{session.id_session}}">
