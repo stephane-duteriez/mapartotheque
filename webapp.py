@@ -58,3 +58,9 @@ def download(pdfName):
     file_name = str(request.args.get('file_name')) + ".pdf"
     response = urllib.request.urlopen('https://tunemanager.blob.core.windows.net/mycontainer/' + pdfName)
     return send_file(response, mimetype= 'text/pdf', attachment_filename= file_name, as_attachment = True)
+
+@bp.route('/images/<string:imageName>')
+def getImage(imageName):
+    response = urllib.request.urlopen('https://tunemanager.blob.core.windows.net/mycontainer/' + imageName)
+    return send_file(response, mimetype= 'image/png')
+
