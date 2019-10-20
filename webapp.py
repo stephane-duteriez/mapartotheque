@@ -1,5 +1,8 @@
 from flask import Flask, render_template, Blueprint 
 from mapartothequeClass import *
+import urllib.request
+from flask import request
+from flask import send_file
 
 client = ndb.Client()
 bp = Blueprint('webapp', __name__, url_prefix='/')
@@ -40,10 +43,18 @@ def ViewTune(idTune):
 def ViewSession(idSession):
     with client.context() as context:
         sessions = Session.query(Session.id_session==int(idSession))
+        tune_in_session = Tune_in_session.query(Session.id_session==int(idSession)).order(Tune_in_session.pos)
+        mytunes = []
+        for tune in tune_in_session:
+            mytunes.append(Tune.query(Tune.id_tune==tune.id_tune).get())
         if (sessions) :
             session = sessions.get()
-            return render_template('show_session.html', session=session)
+            return render_template('show_session.html', session=session, mytunes=mytunes)
         else :
             return "Session non trouvée : " + idSession
 
-
+@bp.route('/home/download/<string:pdfName>')
+def download(pdfName):
+    file_name = str(request.args.get('file_name')) + ".pdf"
+    response = urllib.request.urlopen('https://tunemanager.blob.core.windows.net/mycontainer/' + pdfName)
+    return send_file(response, mimetype= 'text/pdf', attachment_filename= file_name, as_attachment = True)

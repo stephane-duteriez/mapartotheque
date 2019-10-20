@@ -16,7 +16,7 @@ function search() {
 
 $(document).ready(function() {
     to_execute();
-    navigator.serviceWorker.register('./service-worker.js', {
+    navigator.serviceWorker.register('/service-worker.js', {
         scope: '/'
     });
 });
