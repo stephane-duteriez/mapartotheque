@@ -3,29 +3,32 @@
 {% block content %}
 <div class="container body-content">
 	<h2>sessions</h2>
-	<div class="panel-group" id="accordion">
+	<div id="accordion">
 	{% for element in listSessions.values() %}
-		<div class="panel panel-default">
-			<div class="panel-heading btn_collapse" data-toggle="collapse" data-parent="#accordion" href="#r{{element.rythme.id_rythme}}">
+		<div class="card">
+			<div class="card-header btn_collapse" data-toggle="collapse" data-parent="#accordion" href="#r{{element.rythme.id_rythme}}">
 				<h3 class="panel-title">
 					{{element.rythme.nom_rythme}}
 				</h3>
 			</div>
-			<div id="r{{element.rythme.id_rythme}}" class="panel-collapse collapse">
+			<div id="r{{element.rythme.id_rythme}}" class="card-body collapse">
                 <ul id="l{{element.rythme.id_rythme}}" class="list-group">
 					{% for session in element.listTunes %}
-					<li class="row list-group-item">
+					<li class="list-group-item">
+						<div class="row">
 							<div class="col-sm-8" style="cursor: pointer;" onclick="window.location='/home/viewSession/{{session.id_session}}';">
 									<p>{{session.name_session}}</p>
 							</div>
 							<div class="col-sm-2 btn-group" role="group">
 								<a class="btn btn-primary" href="/home/viewSession/{{session.id_session}}">
-									<span class="glyphicon glyphicon-eye-open"></span>
+									<i class="material-icons">launch</i>
 								</a>
 								<a class="btn btn-primary" href="/home/download/{{session.pdf_file}}?file_name={{session.file_name}}" download="{{session.name_session}}.pdf">
-									<span class="glyphicon glyphicon-save"></span>
+									<i class="material-icons">save_alt</i>
 								</a>
 							</div>
+						</div>
+							
 					</li>
 					{% endfor %}
                 </ul>
