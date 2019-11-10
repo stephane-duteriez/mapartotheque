@@ -3,21 +3,28 @@ from mapartothequeClass import *
 import urllib.request
 from flask import request
 from flask import send_file
+from globalVar import *
 
 client = ndb.Client()
 bp = Blueprint('webapp', __name__, url_prefix='/')
 
 @bp.route('/')
 def main():
-    with client.context() as context:
-        b_rythmes = Rythm.query()
-        lTunesForTemplate = {}
-        for rythme in b_rythmes:
-            lTunesForTemplate[rythme.id_rythme] = RythmForDisplay(rythme)
-        b_tunes =  Tune.query().order(Tune.titre)
-        for tune in b_tunes:
-            lTunesForTemplate[tune.id_rythme].add_tune(tune)
-        return render_template('listTunes.html', list_tunes = lTunesForTemplate)
+    result = redis_client.get("main")
+    if result: 
+        return result
+    else :
+        with client.context() as context:
+            b_rythmes = Rythm.query()
+            lTunesForTemplate = {}
+            for rythme in b_rythmes:
+                lTunesForTemplate[rythme.id_rythme] = RythmForDisplay(rythme)
+            b_tunes =  Tune.query().order(Tune.titre)
+            for tune in b_tunes:
+                lTunesForTemplate[tune.id_rythme].add_tune(tune)
+            result = render_template('listTunes.html', list_tunes = lTunesForTemplate)
+            redis_client.set("main", result)
+    return result
 
 @bp.route('/home/sessions')
 def listSessions():

@@ -5,14 +5,32 @@ import json
 client = ndb.Client()
 bp = Blueprint('api', __name__, url_prefix='/')
 
+def cleanCacheTunes():
+    redis_client.delete("main")
+    redis_client.delete("listTunes")
+
+def cleanCacheSessions():
+    redis_client.delete("sessions")
+    redis_client.delete("listSessions")
+
+@bp.route('/api/apiTunes/cleanCache')
+def cleanCache():
+    cleanCacheSessions()
+    cleanCacheTunes()
+    return "Ok"
+
 @bp.route('/api/apiTunes/', methods=['GET'])
 def getTune():
-    with client.context() as context:
-        b_tunes=Tune.query().order(Tune.titre)
-        result = []
-        for tune in b_tunes:
-            result.append(tune.to_dict())
-        return jsonify(result)
+    result = redis_client.get("listTunes")
+    if not result:   
+        with client.context() as context:
+            b_tunes=Tune.query().order(Tune.titre)
+            listTune = []
+            for tune in b_tunes:
+                listTune.append(tune.to_dict())
+            result = json.dumps(listTune, default=str)
+            redis_client.set("listTunes", result)
+    return jsonify(json.loads(result))
 
 @bp.route('/api/apiTunes/<int:idTune>', methods=['PUT'])
 def putTune(idTune):
@@ -28,6 +46,7 @@ def putTune(idTune):
     
 @bp.route('/api/apiTunes/', methods=['POST'])
 def postTune():
+    cleanCacheTunes()
     with client.context() as context:
         dictionary = request.json
         tune = Tune()
@@ -40,6 +59,7 @@ def postTune():
 
 @bp.route('/api/apiTunes/<int:idTune>', methods=['DELETE'])
 def deleteTune(idTune):
+    cleanCacheTunes()
     with client.context() as context:
         tune = Tune.query(Tune.id_tune==int(idTune)).get()
         if tune:
@@ -70,6 +90,7 @@ def putSession(idSession):
 
 @bp.route('/api/apiSessions/', methods=['POST'])
 def postSession():
+    cleanCacheSessions()
     with client.context() as context:
         dictionary = request.json
         session = Session()
@@ -82,6 +103,7 @@ def postSession():
 
 @bp.route('/api/apiSessions/<int:idSession>', methods=['DELETE'])
 def deleteSession(idSession):
+    cleanCacheSessions()
     with client.context() as context:
         session = Session.query(Session.id_session==int(idSession)).get()
         if session:
@@ -117,6 +139,7 @@ def getTunesInSession():
 
 @bp.route('/api/apiTunesInSessions/', methods=['POST'])
 def postTunesInSession():
+    cleanCacheSessions()
     with client.context() as context:
         dictionary = request.json
         tis = Tune_in_session()
@@ -126,6 +149,7 @@ def postTunesInSession():
 
 @bp.route('/api/apiTunesInSessions/<int:idSession>', methods=['DELETE'])
 def deleteTuneInSession(idSession):
+    cleanCacheSessions()
     with client.context() as context:
         l_tis = Tune_in_session.query(Tune_in_session.id_session==int(idSession))
         if l_tis:

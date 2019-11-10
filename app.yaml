@@ -1,5 +1,8 @@
 runtime: python37
 
+includes:
+  - credentials.yaml
+
 handlers :
 - url: /service-worker.js
   static_files: static/js/service-worker.js

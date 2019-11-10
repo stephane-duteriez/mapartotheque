@@ -1,9 +1,19 @@
 from google.cloud import ndb
+from globalVar import *
 
 class Rythm(ndb.Model):
     id_rythme = ndb.IntegerProperty()
     nom_rythme = ndb.StringProperty()
     lastChanged = ndb.DateTimeProperty(auto_now = True)
+    @classmethod
+    def getAll(cls):
+        cache_rythmes = redis_client.get("rythmes")
+        if cache_rythmes :
+            b_rythmes = json.loads(cache_rythmes)
+        else :
+            b_rythmes = cls.query()
+            redis_client.set("rythmes", json.dumps(b_rythmes))
+        return b_rythmes
 
 class Tune(ndb.Model):
     id_tune = ndb.IntegerProperty()
@@ -17,6 +27,15 @@ class Tune(ndb.Model):
     pdf_file = ndb.StringProperty()
     id_rythme = ndb.IntegerProperty()
     lastChanged = ndb.DateTimeProperty(auto_now = True)
+    @classmethod
+    def getAll(cls):
+        cache_tunes = redis_client.get("tunes")
+        if cache_tunes :
+            b_tunes = json.loads(cache_tunes)
+        else :
+            b_tunes = cls.query()
+            redis_client.set("tunes", json.dumps(b_tunes))
+        return b_tunes
 
 class Session(ndb.Model):
     name_session = ndb.StringProperty()
@@ -38,3 +57,7 @@ class RythmForDisplay():
         self.listTunes = []
     def add_tune(self, tune):
         self.listTunes.append(tune)
+
+class User():
+    sqrlId =  ndb.StringProperty()
+    lastChanged = ndb.DateTimeProperty(auto_now = True)

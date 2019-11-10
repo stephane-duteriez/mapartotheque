@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container body-content">
+    <div class="row justify-content-md-center">
+        <div class="col-xs-4">
+            <div>
+                <a href="{{url}}">SQRL</a>
+            </div>
+            <div>
+                <a href="{{url}}">
+                    <img src="data:image/png;base64,{{qrcode}}"></src>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

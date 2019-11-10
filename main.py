@@ -14,7 +14,6 @@
 
 # [START gae_python37_app]
 from flask import Flask, render_template
-from mapartothequeClass import *
 from google.oauth2 import service_account
 import os
 
@@ -22,21 +21,26 @@ if not os.getenv('GAE_ENV', '').startswith('standard'):
     credentials = service_account.Credentials.from_service_account_file('/mnt/c/users/steph/gae/mapartotheque.json')
     credential_path = "/mnt/c/users/steph/gae/mapartotheque.json"
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
-    
+
+from globalVar import *
+
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
 
 IS_DEV = __name__ == '__main__'
 
+from mapartothequeClass import *
 client = ndb.Client()
 
 import webapp
 import init
 import api
+import loginApi
 app.register_blueprint(webapp.bp)
 app.register_blueprint(init.bp)
 app.register_blueprint(api.bp)
+app.register_blueprint(loginApi.bp)
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
