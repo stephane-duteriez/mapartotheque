@@ -16,7 +16,7 @@
 		<img id="myImg" src="/images/{{tune.image_file}}" width="600"></img>
 	</div>
 	<script type="text/javascript">
-		function to_execute() {
+		var to_execute = function to_execute() {
 			var width=$("#view").width();
 			$("#myImg").width(width);
 			$(window).resize(function() {

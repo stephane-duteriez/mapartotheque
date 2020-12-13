@@ -1,8 +1,8 @@
 from flask import Flask, render_template, Blueprint, jsonify, request
-from mapartothequeClass import *
+from .mapartothequeClass import Tune, Session, Tune_in_session, Rythm, RythmForDisplay, User
 import json
+from . import client, redis_client
 
-client = ndb.Client()
 bp = Blueprint('api', __name__, url_prefix='/')
 
 def cleanCacheTunes():
@@ -55,7 +55,7 @@ def postTune():
         new_id = Tune().query().order(-Tune.id_tune).get().id_tune + 1
         tune.id_tune=new_id
         tune.put()
-        return ""
+        return jsonify(tune.to_dict())
 
 @bp.route('/api/apiTunes/<int:idTune>', methods=['DELETE'])
 def deleteTune(idTune):

@@ -1,5 +1,6 @@
 from google.cloud import ndb
-from globalVar import *
+from . import redis_client
+import json
 
 class Rythm(ndb.Model):
     id_rythme = ndb.IntegerProperty()
@@ -58,6 +59,7 @@ class RythmForDisplay():
     def add_tune(self, tune):
         self.listTunes.append(tune)
 
-class User():
+class User(ndb.Model):
     sqrlId =  ndb.StringProperty()
+    disabled = ndb.BooleanProperty(default=False)
     lastChanged = ndb.DateTimeProperty(auto_now = True)

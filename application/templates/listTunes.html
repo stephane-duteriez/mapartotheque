@@ -29,10 +29,10 @@
 									<a class="btn btn-primary" href="/home/download/{{tune.pdf_file}}?file_name={{tune.titre}}" download="{{tune.titre}}.pdf">
 										<i class="material-icons">save_alt</i>
 									</a>
-									{% if tune.youtubelink != "None" %}
+									{% if (tune.youtubelink != "None" and tune.youtubelink != "") %}
 									<div class="btn btn-primary" data-toggle="modal" data-target="#modal-video" data-link="{{tune.youtubelink}}">
 										<i class="material-icons">play_circle_outline</i>
-										</div>
+									</div>
 									{% endif %}
 								</div>
 							</div>
@@ -57,7 +57,7 @@
 	</div><!-- /.modal -->
 
 	<script type="text/javascript">
-	function to_execute() {
+	var to_execute = function to_execute() {
 		$('#modal-video').on('show.bs.modal', function (event) {
   			var button = $(event.relatedTarget); // Button that triggered the modal
   			var youtubelink = button.data('link'); // Extract info from data-* attributes

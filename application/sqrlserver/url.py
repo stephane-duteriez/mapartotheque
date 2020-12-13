@@ -22,6 +22,7 @@ class Url(object):
     def __init__(self, authority, secure=True):
         self.authority = authority
         self.secure = secure
+        self.nutstr = ""
 
     def generate(self, path, **kwargs):
         """Generates the actual URL
@@ -81,7 +82,7 @@ class Url(object):
         flag = 'qr'
         if 'type' in kwargs:
             flag = kwargs['type']
-        nutstr = nut.toString(flag)
+        self.nutstr = nut.toString(flag)
 
         #query
         query = []
@@ -89,7 +90,7 @@ class Url(object):
             query = kwargs['query']
         if ( ('ext' in kwargs) and (kwargs['ext'] is not None) and (kwargs['ext'] > 0) ):
             query.insert(0, ('x', kwargs['ext']))
-        query.insert(0, ('nut', nutstr))
+        query.insert(0, ('nut', self.nutstr))
 
         #build
         parts = []

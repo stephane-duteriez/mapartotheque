@@ -1,11 +1,10 @@
-from flask import Flask, render_template, Blueprint 
-from mapartothequeClass import *
+from flask import Flask, render_template, Blueprint, session 
+from .mapartothequeClass import Tune, Session, Tune_in_session, Rythm, RythmForDisplay, User
 import urllib.request
-from flask import request
+from flask import request, current_app
 from flask import send_file
-from globalVar import *
+from . import client, sess, redis_client
 
-client = ndb.Client()
 bp = Blueprint('webapp', __name__, url_prefix='/')
 
 @bp.route('/')

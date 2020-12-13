@@ -1,7 +1,7 @@
 from flask import Flask, render_template, Blueprint 
-from mapartothequeClass import *
+from .mapartothequeClass import Tune, Session, Tune_in_session, Rythm, RythmForDisplay, User
+from . import client
 
-client = ndb.Client()
 bp = Blueprint('init', __name__, url_prefix='/')
 
 @bp.route('/initdatabase')
