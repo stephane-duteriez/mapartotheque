@@ -3,7 +3,7 @@ flask-socketio
 Flask-Session
 google-cloud-datastore >= 1.7.0, < 2.0.0dev
 google-cloud-ndb==1.7.1
-redis==3.3.8
+redis==4.5.3
 bitstring>=3.1.5
 PyNaCl>=1.1.2
 pyqrcode
